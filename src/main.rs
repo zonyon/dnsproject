@@ -136,7 +136,9 @@ mod DnsQuestion {
         A,
         AAAA,
         NS,
-        MX
+        MX,
+        Cname,
+        Ptr
     }
 
     impl DnsQuestion {
@@ -186,9 +188,7 @@ mod DnsRR {
     }
 
     impl DnsRR {
-        pub fn question(&self) -> &DnsQuestion::DnsQuestion {
-            &self.question
-        }
+
         pub fn ttl(&self) -> i32 {
             self.ttl
         }
@@ -198,9 +198,7 @@ mod DnsRR {
         pub fn rdata(&self) -> u32 {
             self.rdata
         }
-        pub fn set_question(&mut self, question: DnsQuestion::DnsQuestion) {
-            self.question = question;
-        }
+
         pub fn set_ttl(&mut self, ttl: i32) {
             self.ttl = ttl;
         }
@@ -209,6 +207,24 @@ mod DnsRR {
         }
         pub fn set_rdata(&mut self, rdata: u32) {
             self.rdata = rdata;
+        }
+        pub fn rname(&self) -> u32 {
+            self.rname
+        }
+        pub fn Dnsrtype(&self) -> u32 {
+            self.Dnsrtype
+        }
+        pub fn rclass(&self) -> u32 {
+            self.rclass
+        }
+        pub fn set_rname(&mut self, rname: u32) {
+            self.rname = rname;
+        }
+        pub fn set_Dnsrtype(&mut self, Dnsrtype: u32) {
+            self.Dnsrtype = Dnsrtype;
+        }
+        pub fn set_rclass(&mut self, rclass: u32) {
+            self.rclass = rclass;
         }
     }
 }
