@@ -26,7 +26,7 @@ mod DnsHeader {
 
     }
     impl DnsHeader {
-        pub(crate) fn new(a: bool, b: bool, c: bool, d: bool, e: u16, f: u16, g: u16, h: i16) -> Self {
+        pub(crate) fn new(a: bool, b: bool, c: bool, d: bool, e: u16, f: u16, g: u16, h: i16 ,  i: u16) -> Self {
             DnsHeader {
                 id: rand::thread_rng().gen(),
                 qr: a,
@@ -40,7 +40,7 @@ mod DnsHeader {
                 qdcount: e,
                 ancount: f,
                 nscount: g,
-                arcount: 0
+                arcount: i
             }
         }
         pub fn id(&self) -> u16 {
@@ -125,14 +125,15 @@ mod DnsHeader {
 }
 
 mod DnsQuestion {
-    pub struct DnsQuestion {
-        qname: u32,
-        Dnsrtype: u32,
-        qclass: u32,
+    use crate::DnsQuestion::Dnsrtype::{A, AAAA, Cname, MX, NS, Ptr};
 
+    pub struct DnsQuestion {
+        qname: u16,
+        Dnsrtype: Dnsrtype,
+        qclass: u16,
     }
 
-    enum Dnsrtype {
+    pub enum Dnsrtype {
         A,
         AAAA,
         NS,
@@ -140,10 +141,24 @@ mod DnsQuestion {
         Cname,
         Ptr
     }
+    impl Dnsrtype {
+        pub fn no(&self) -> i32 {
+            match self {
+                Dnsrtype::A => return 1,
+                Dnsrtype::AAAA => return 28,
+                Dnsrtype::NS => return 2,
+                Dnsrtype::MX => return 5,
+                Dnsrtype::Cname => return 12,
+                Dnsrtype::Ptr => return 15,
+            }
+        }
+    }
+
 
     impl DnsQuestion {
-        fn new(a: u32, b: u32, mut c: u32) -> DnsQuestion {
-            if (c == !0x0001) {
+
+        pub fn new(a: u16, b: Dnsrtype, mut c: u16) -> DnsQuestion {
+            if (c != 0x0001) {
                 eprintln!("Error: qclass not 0x0001");
                 std::process::exit(1);
             }
@@ -154,23 +169,23 @@ mod DnsQuestion {
                 Dnsrtype: b
             }
         }
-        pub fn qname(&self) -> u32 {
+        pub fn qname(&self) -> u16 {
             self.qname
         }
-        pub fn Dnsrtype(&self) -> u32 {
-            self.Dnsrtype
-        }
-        pub fn qclass(&self) -> u32 {
+        pub fn qclass(&self) -> u16 {
             self.qclass
         }
-        pub fn set_qname(&mut self, qname: u32) {
+        pub fn set_qname(&mut self, qname: u16) {
             self.qname = qname;
         }
-        pub fn set_Dnsrtype(&mut self, Dnsrtype: u32) {
+        pub fn set_Dnsrtype(&mut self, Dnsrtype: Dnsrtype) {
             self.Dnsrtype = Dnsrtype;
         }
-        pub fn set_qclass(&mut self, qclass: u32) {
+        pub fn set_qclass(&mut self, qclass: u16) {
             self.qclass = qclass;
+        }
+        pub fn Dnsrtype(&self) -> &Dnsrtype {
+            &self.Dnsrtype
         }
     }
 }
@@ -179,12 +194,21 @@ mod DnsRR {
     use crate::DnsQuestion;
 
     pub struct DnsRR {
-        rname: u32,
-        Dnsrtype: u32,
-        rclass: u32,
+        rname: u16,
+        Dnsrtype: Dnsrtype,
+        rclass: u16,
         ttl: i32,
         rdlength: i16,
         rdata: u32
+    }
+
+    pub enum Dnsrtype {
+        A,
+        AAAA,
+        NS,
+        MX,
+        Cname,
+        Ptr
     }
 
     impl DnsRR {
@@ -208,23 +232,24 @@ mod DnsRR {
         pub fn set_rdata(&mut self, rdata: u32) {
             self.rdata = rdata;
         }
-        pub fn rname(&self) -> u32 {
+        pub fn rname(&self) -> u16 {
             self.rname
         }
-        pub fn Dnsrtype(&self) -> u32 {
-            self.Dnsrtype
-        }
-        pub fn rclass(&self) -> u32 {
+
+        pub fn rclass(&self) -> u16 {
             self.rclass
         }
-        pub fn set_rname(&mut self, rname: u32) {
+        pub fn set_rname(&mut self, rname: u16) {
             self.rname = rname;
         }
-        pub fn set_Dnsrtype(&mut self, Dnsrtype: u32) {
+        pub fn set_Dnsrtype(&mut self, Dnsrtype: Dnsrtype) {
             self.Dnsrtype = Dnsrtype;
         }
-        pub fn set_rclass(&mut self, rclass: u32) {
+        pub fn set_rclass(&mut self, rclass: u16) {
             self.rclass = rclass;
+        }
+        pub fn Dnsrtype(&self) -> &Dnsrtype {
+            &self.Dnsrtype
         }
     }
 }
@@ -232,5 +257,3 @@ mod DnsRR {
 fn main() {
     println!("hello");
 }
-
-
