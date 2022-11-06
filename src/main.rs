@@ -1,16 +1,35 @@
 use crate::DnsRR::Dnsrtype;
 
-pub struct DnsPacket {
-    header: DnsHeader::DnsHeader ,
-    question: DnsQuestion::DnsQuestion ,
-    reponse: DnsRR::DnsRR
+mod DnsPacket{
+    use crate::{DnsHeader, DnsQuestion};
+    use crate::DnsRR::DnsRR;
+
+    pub struct DnsPacket {
+    header: DnsHeader::DnsHeader,
+    question: DnsQuestion::DnsQuestion,
+    reponse: Vec<DnsRR>,
 }
+
+    impl DnsPacket{
+    pub fn genereRR(mut self){
+    let answer: u16 = self.header.ancount();
+    let authority: u16 = self.header.nscount();
+    let additional: u16 = self.header.arcount();
+
+
+
+    }
+}
+
+}
+
+
+
 
 mod DnsHeader {
     use std::io::Write;
     use rand::Rng;
     static mut LIST_ID: Vec<u16> = vec![];
-
     pub struct DnsHeader {
         id: u16,
         qr: bool,
@@ -141,7 +160,6 @@ mod DnsQuestion {
         Dnsrtype: Dnsrtype,
         qclass: u16,
     }
-
     pub enum Dnsrtype {
         A,
         AAAA,
@@ -162,8 +180,6 @@ mod DnsQuestion {
             }
         }
     }
-
-
     impl DnsQuestion {
 
         pub fn new(a: u16, b: Dnsrtype, mut c: u16) -> DnsQuestion {
@@ -178,6 +194,7 @@ mod DnsQuestion {
                 Dnsrtype: b
             }
         }
+
         pub fn qname(&self) -> u16 {
             self.qname
         }
@@ -201,7 +218,6 @@ mod DnsQuestion {
 
 mod DnsRR {
     use crate::DnsQuestion;
-
     pub struct DnsRR {
         rname: u16,
         Dnsrtype: Dnsrtype,
@@ -210,7 +226,6 @@ mod DnsRR {
         rdlength: i16,
         rdata: u32
     }
-
     pub enum Dnsrtype {
         A,
         AAAA,
@@ -219,8 +234,22 @@ mod DnsRR {
         Cname,
         Ptr
     }
-
     impl DnsRR {
+
+        pub fn new(a: u16, b: Dnsrtype, c: u16) -> DnsRR {
+            if c != 0x0001 {
+                eprintln!("Error: qclass not 0x0001");
+                std::process::exit(1);
+            }
+            DnsRR {
+                rname: a,
+                Dnsrtype: b,
+                rclass: c,
+                ttl: 0,
+                rdlength: 0,
+                rdata: 0
+            }
+        }
 
         pub fn ttl(&self) -> i32 {
             self.ttl
