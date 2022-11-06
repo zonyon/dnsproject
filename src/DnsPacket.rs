@@ -11,7 +11,7 @@ impl DnsPacket{
 
 
     pub fn byte_size(&self)-> i32{
-        let a = 18 + (self.reponse.len()*12) ;
+        let a = 18 + (self.reponse.len()*10  + self.question.namesize ) ;
         return a.try_into().unwrap() ;
     }
 
