@@ -1,3 +1,4 @@
+use crate::DnsHeader::DnsHeader;
 use crate::DnsQuestion;
 
 pub struct DnsRR {
