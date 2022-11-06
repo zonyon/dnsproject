@@ -17,6 +17,8 @@ mod DnsPacket{
     let authority: u16 = self.header.nscount();
     let additional: u16 = self.header.arcount();
 
+    let rr = DnsRR::new(DnsQuestion::DnsQuestion::new(3 , DnsQuestion::Dnsrtype::A , 2 ));
+    self.reponse.push(rr)
 
 
     }
