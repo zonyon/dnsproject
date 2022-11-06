@@ -4,7 +4,7 @@ pub struct DnsQuestion {
     qname: String,
     Dnsrtype: Dnsrtype,
     qclass: u16,
-    pub namesize : usize ,
+
 }
 
 
@@ -40,7 +40,7 @@ impl DnsQuestion {
             qname: a.to_string(),
             qclass: c,
             Dnsrtype: b ,
-            namesize : a.len()
+
         }
     }
 
