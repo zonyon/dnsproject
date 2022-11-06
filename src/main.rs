@@ -11,10 +11,17 @@ mod DnsPacket{
 }
 
     impl DnsPacket{
+
+
+
+
+
     pub fn genereRR(mut self){
     let answer: u16 = self.header.ancount();
     let authority: u16 = self.header.nscount();
     let additional: u16 = self.header.arcount();
+
+
 
 
 
