@@ -1,3 +1,4 @@
+use crate::DnsRR::Dnsrtype;
 
 pub struct DnsPacket {
     header: DnsHeader::DnsHeader ,
@@ -8,6 +9,7 @@ pub struct DnsPacket {
 mod DnsHeader {
     use std::io::Write;
     use rand::Rng;
+    static mut LIST_ID: Vec<u16> = vec![];
 
     pub struct DnsHeader {
         id: u16,
@@ -26,9 +28,17 @@ mod DnsHeader {
 
     }
     impl DnsHeader {
+
         pub(crate) fn new(a: bool, b: bool, c: bool, d: bool, e: u16, f: u16, g: u16, h: i16 ,  i: u16) -> Self {
+            //attribution d'un id unique et aléatoire
+            let mut temp: u16 = rand::thread_rng().gen();
+            unsafe {
+                while LIST_ID.contains(&temp) {
+                    temp = rand::thread_rng().gen();
+                }
+            }
             DnsHeader {
-                id: rand::thread_rng().gen(),
+                id: temp,
                 qr: a,
                 opcode: false,
                 aa: b,
@@ -123,7 +133,6 @@ mod DnsHeader {
         }
     }
 }
-
 mod DnsQuestion {
     use crate::DnsQuestion::Dnsrtype::{A, AAAA, Cname, MX, NS, Ptr};
 
@@ -255,5 +264,8 @@ mod DnsRR {
 }
 
 fn main() {
-    println!("hello");
+    let a = DnsQuestion::Dnsrtype::AAAA;
+    println!("{}",a.no());
+
+
 }
